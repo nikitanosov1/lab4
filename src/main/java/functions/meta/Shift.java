@@ -7,6 +7,12 @@ public class Shift implements Function {
     private double shiftX;
     private double shiftY;
 
+    public Shift(Function function, double shiftX, double shiftY) {
+        this.function = function;
+        this.shiftX = shiftX;
+        this.shiftY = shiftY;
+    }
+
     @Override
     public double getLeftDomainBorder() {
         return function.getLeftDomainBorder() + shiftX;

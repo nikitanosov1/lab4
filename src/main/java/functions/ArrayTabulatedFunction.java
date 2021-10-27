@@ -115,21 +115,30 @@ public class ArrayTabulatedFunction implements TabulatedFunction{
         }
     }
     public void addPoint(FunctionPoint point) throws InappropriateFunctionPointException{
-        int indexForAdd = 0;
-        for (int i = 0; i < countPoints; ++i) if (points[i].getX() < point.getX()) indexForAdd = i + 1; // Куда вставить элемент?
+        if (points == null){
+            points = new FunctionPoint[1];
+            points[0] = point;
+            countPoints = 1;
+        }else {
+            int indexForAdd = 0;
+            for (int i = 0; i < countPoints; ++i)
+                if (points[i].getX() < point.getX()) indexForAdd = i + 1; // Куда вставить элемент?
 
-        if ((indexForAdd != countPoints) && (points[indexForAdd].getX() == point.getX())){ throw new InappropriateFunctionPointException();}
+            if ((indexForAdd != countPoints) && (points[indexForAdd].getX() == point.getX())) {
+                throw new InappropriateFunctionPointException();
+            }
 
-        ++countPoints;
-        if (countPoints > points.length){
-            FunctionPoint[] temp = new FunctionPoint[2 * points.length];
-            System.arraycopy(points, 0, temp, 0, indexForAdd);
-            temp[indexForAdd] = point;
-            System.arraycopy(points, indexForAdd, temp, indexForAdd + 1, points.length - indexForAdd);
-            points = temp;
-        }else{
-            for (int i = countPoints - 1; i > indexForAdd; --i) points[i] = points[i - 1];
-            points[indexForAdd] = point;
+            ++countPoints;
+            if (countPoints > points.length) {
+                FunctionPoint[] temp = new FunctionPoint[2 * points.length];
+                System.arraycopy(points, 0, temp, 0, indexForAdd);
+                temp[indexForAdd] = point;
+                System.arraycopy(points, indexForAdd, temp, indexForAdd + 1, points.length - indexForAdd);
+                points = temp;
+            } else {
+                for (int i = countPoints - 1; i > indexForAdd; --i) points[i] = points[i - 1];
+                points[indexForAdd] = point;
+            }
         }
     }
 }

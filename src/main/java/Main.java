@@ -1,52 +1,77 @@
 import functions.*;
+import functions.basic.Cos;
+import functions.basic.Exp;
+import functions.basic.Log;
+import functions.basic.Sin;
+
+import java.io.*;
 
 public class Main {
     public static void main(String[] args){
-        final int countPoints = 5;
-        final double left = 0.0;
-        final double right = 10.0;
-
-        TabulatedFunction graph = new LinkedListTabulatedFunction(left, right, countPoints);
-
-        //LinkedListTabulatedFunction linkedList = new LinkedListTabulatedFunction(left, right, countPoints);
-        //linkedList.addNodeToTail();
-        //System.out.println(linkedList.getNodeByIndex(0));
-        //System.out.println(linkedList.getNodeByIndex(1));
-
-        for (int i = 0; i < countPoints; ++i){
-            graph.setPointY(i, - (graph.getPointX(i) - 4)*(graph.getPointX(i) - 4) + 5);
+        //task 8
+        Sin sin = new Sin();
+        Cos cos = new Cos();
+        double x = 0;
+        while (x < 2 * Math.PI){
+            System.out.println("Sin(" + x + ") = " + sin.getFunctionValue(x));
+            x = x + 0.1;
         }
-
-        //FunctionPoint p = new FunctionPoint(5.1, 228);
-
-        try {
-            //graph.deletePoint(3);
-            graph.deletePoint(0);
-            graph.deletePoint(2);
-        }
-        catch(FunctionPointIndexOutOfBoundsException error1){
-            error1.printStackTrace();
-        }
-        catch (InappropriateFunctionPointException error2) {
-            error2.printStackTrace();
-        }
-
-        System.out.println(graph.getPointsCount());
-        for (int i = 0; i < graph.getPointsCount(); ++i){
-            System.out.print("x value: ");
-            System.out.print(graph.getPointX(i));
-            System.out.print("            y value: ");
-            System.out.println(graph.getPointY(i));
+        System.out.println();
+        x = 0;
+        while (x < 2 * Math.PI){
+            System.out.println("Cos(" + x + ") = " + cos.getFunctionValue(x));
+            x = x + 0.1;
         }
 
         System.out.println();
-        final int countPointsForTest = 10;
-        final double interval = (right - left)/(countPointsForTest - 1);
-        for (int i = 0; i < countPointsForTest; ++i){
-            System.out.print("x value: ");
-            System.out.print(left + i * interval);
-            System.out.print("           y value: ");
-            System.out.println(graph.getFunctionValue(left + i * interval));
+        Function f = Functions.sum(Functions.power(sin, 2), Functions.power(cos, 2));
+        x = 0;
+        while (x < 2 * Math.PI){
+            System.out.println("sin^2(" + x + ") + cos^2(" + x + ") = " + f.getFunctionValue(x));
+            x = x + 0.1;
         }
+
+        TabulatedFunction exp = TabulatedFunctions.tabulate(new Exp(), 0,10,11);
+        try (Writer file = new FileWriter("1.txt");){
+            TabulatedFunctions.writeTabulatedFunction(exp, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Reader fileReader = null;
+        try {
+            fileReader = new FileReader("1.txt");
+            TabulatedFunction tabulatedFunction = TabulatedFunctions.readTabulatedFunction(fileReader);
+            for (int i = 0; i < tabulatedFunction.getPointsCount(); i++) {
+                System.out.println("X = " + tabulatedFunction.getPointX(i) + " Y = " + tabulatedFunction.getPointY(i));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // UIEDGHFIOFGSOIFGSOFSDGFOSEGFEGGEROIFGWEIFEGUIFEGOFUIYEGOFESGOFI
+
+        TabulatedFunction log = TabulatedFunctions.tabulate(new Log(Math.E), 0,10,11);
+        try (OutputStream file = new FileOutputStream("2.txt");){
+            TabulatedFunctions.outputTabulatedFunction(log, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream("2.txt");
+            TabulatedFunction tabulatedFunction = TabulatedFunctions.inputTabulatedFunction(inputStream);
+            for (int i = 0; i < tabulatedFunction.getPointsCount(); i++) {
+                System.out.println("X = " + tabulatedFunction.getPointX(i) + " Y = " + tabulatedFunction.getPointY(i));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 }
